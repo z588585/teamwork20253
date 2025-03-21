@@ -1,883 +1,347 @@
+import 'dart:math';
+import 'dart:ui';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 
+void main() {
+  runApp(MyApp());
+}
 
-
-void main() {runApp(const FigmaToCodeApp());}
-
-class FigmaToCodeApp extends StatelessWidget {
-  const FigmaToCodeApp({super.key});
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color.fromARGB(255, 18, 32, 47),
-      ),
-      home: Scaffold(
-        body: ListView(children: [
-          home_main_page(),
-        ]),
-      ),
+      home: MyHomePage(),
     );
   }
 }
 
-class home_main_page extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+
+  
   @override
-  Widget build(BuildContext context) {
-    return Column(
-            children: [
-              Positioned(//最顶部栏
-                left: 0,
-                top: 0,
-                child: Container(
-                  width: 440,
-                  height: 52,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFECE6F0) /* Schemes-Surface-Container-High */,
-                  ),
-                ),
-              ), 
-              Positioned(//顶部栏
-                left: 0,
-                top: 52,
-                child: Container(
-                  width: 440,
-                  height: 42,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: Container(
-                          width: 440,
-                          height: 42,
-                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFECE6F0) /* Schemes-Surface-Container-High */,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x26000000),
-                                blurRadius: 6,
-                                offset: Offset(0, 2),
-                                spreadRadius: 2,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned( //左 包括home
-                        left: 0,
-                        top: 0,
-                        child: Container(
-                          width: 440,
-                          height: 42,
-                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFECE6F0) /* Schemes-Surface-Container-High */,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x26000000),
-                                blurRadius: 6,
-                                offset: Offset(0, 2),
-                                spreadRadius: 2,
-                              )
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            spacing: 4,
-                            children: [
-                              Container(
-                                width: 48,
-                                height: 30,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  spacing: 10,
-                                  children: [
-                                  
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 328,
-                                child: Text(
-                                  'home',
-                                  style: TextStyle(
-                                    color: const Color(0xFF1D1B20) /* Schemes-On-Surface */,
-                                    fontSize: 22,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.27,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: 48,
-                                height: 48,
-                                child: Stack(
-                                  children: [
-                                    Positioned(
-                                      left: 0,
-                                      top: 0,
-                                      child: Container(
-                                        width: 48,
-                                        height: 48,
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          spacing: 10,
-                                          children: [
-                                            Container(
-                                              clipBehavior: Clip.antiAlias,
-                                              decoration: ShapeDecoration(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(100),
-                                                ),
-                                              ),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                spacing: 10,
-                                                children: [
-                                                  Container(
-                                                    padding: const EdgeInsets.all(8),
-                                                    child: Row(
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      spacing: 10,
-                                                      children: [
-                                                        Container(width: 24, height: 24, child: Stack()),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(//中间内容
-                left: 0,
-                top: 94,
-                child: Container(
-                  width: 440,
-                  height: 769,
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFEF7FF) /* Schemes-Surface */,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          width: 416,
-                          decoration: ShapeDecoration(
-                            color: const Color(0xFFECE6F0) /* Schemes-Surface-Container-High */,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            shadows: [
-                              BoxShadow(
-                                color: Color(0x4C000000),
-                                blurRadius: 3,
-                                offset: Offset(0, 1),
-                                spreadRadius: 0,
-                              )
-                            ],
-                          ),
-                          child: Stack(
-                            children: [
-                              Positioned(//概率
-                                left: 63,
-                                top: 460,
-                                child: SizedBox(
-                                  width: 292,
-                                  height: 110,
-                                  child: Text(
-                                    '63%',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: const Color(0xFF4F378A) /* Schemes-On-Primary-Container */,
-                                      fontSize: 96,
-                                      fontFamily: 'Inter',
-                                      fontWeight: FontWeight.w900,
-                                      shadows: [Shadow(offset: Offset(0, 2), blurRadius: 3, color: Color(0xFF000000).withOpacity(0.30))],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(//你正在干xxx的几率
-                                left: 65,
-                                top: 583,
-                                child: SizedBox(
-                                  width: 288,
-                                  height: 34,
-                                  child: Text(
-                                    'percent chance you are',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: const Color(0xFF32A455),
-                                      fontSize: 24,
-                                      fontFamily: 'Inter',
-                                      fontWeight: FontWeight.w900,
-                                      shadows: [Shadow(offset: Offset(0, 2), blurRadius: 3, color: Color(0xFF000000).withOpacity(0.30))],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(//干的事情
-                                left: 15,
-                                top: 624,
-                                child: SizedBox(
-                                  width: 385,
-                                  height: 82,
-                                  child: Text(
-                                    'running',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: const Color(0xFF4F378A) /* Schemes-On-Primary-Container */,
-                                      fontSize: 64,
-                                      fontFamily: 'Inter',
-                                      fontWeight: FontWeight.w900,
-                                      shadows: [Shadow(offset: Offset(0, 2), blurRadius: 3, color: Color(0xFF000000).withOpacity(0.30))],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(//图片
-                                left: 1,
-                                top: 0,
-                                child: Container(
-                                  width: 415,
-                                  height: 436,
-                                  decoration: ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(//底部栏
-                left: 0,
-                top: 863,
-                child: Container(
-                  width: 440,
-                  height: 93,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFECE6F0) /* Schemes-Surface-Container-High */,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 8,
-                    children: [
-                      Expanded(//home
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            spacing: 4,
-                            children: [
-                              Container(
-                                clipBehavior: Clip.antiAlias,
-                                decoration: ShapeDecoration(
-                                  color: const Color(0xFF65558F) /* Schemes-Primary */,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 64,
-                                      height: 32,
-                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Container(width: 24, height: 24, child: Stack()),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 136,
-                                child: Text(
-                                  'home',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: const Color(0xFF1D1B20) /* Schemes-On-Surface */,
-                                    fontSize: 14,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.43,
-                                    letterSpacing: 0.10,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Expanded(//arduino
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => arduino_page()),
-                              );
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 64,
-                                    decoration: ShapeDecoration(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          width: 64,
-                                          height: 32,
-                                          padding: const EdgeInsets.all(20),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              Container(width: 24, height: 24, child: Stack()),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 136,
-                                    child: Text(
-                                      'arduino',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: const Color(0xFF49454F) /* Schemes-On-Surface-Variant */,
-                                        fontSize: 14,
-                                        fontFamily: 'Roboto',
-                                        fontWeight: FontWeight.w500,
-                                        height: 1.43,
-                                        letterSpacing: 0.10,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      Expanded(//setting
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            spacing: 4,
-                            children: [
-                              Container(
-                                width: 64,
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 64,
-                                      height: 32,
-                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        spacing: 10,
-                                        children: [
-                                          Container(width: 24, height: 24, child: Stack()),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 136,
-                                child: Text(
-                                  'setting',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: const Color(0xFF49454F) /* Schemes-On-Surface-Variant */,
-                                    fontSize: 14,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.43,
-                                    letterSpacing: 0.10,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-    );
-  }
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class arduino_page extends StatelessWidget {
+class _MyHomePageState extends State<MyHomePage> {
+  final items = [
+    BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'),
+    BottomNavigationBarItem(icon: Icon(Icons.bluetooth), label: 'bluetooth'),
+    BottomNavigationBarItem(icon: Icon(Icons.message), label: 'information'),
+  ];
+  
+  //final bodyList = [FirstPage(), SecondPage(), ThirdPage()];
+
+  int currentIndex = 0;
+  int allCount = 0; // 记录所有页面的总数
+  String myBluetoothReadValueUUID = 'characteristic.uuid ';
+  double movementProbability = 0;
+  String movementInString = '0';
+
+
+  // 处理增加计数的方法
+  void increaseCount() {
+    setState(() {
+      allCount++;
+    });
+  }
+
+void changeBluetoothReadValue(List<int> values) {
+  setState(() {
+    int max_index = values[0];
+    int max_value_int = values[1] + (values[2] << 8);
+    double max_value = max_value_int / 1000.0;
+
+    if (max_index == 0) {
+      movementInString = 'Running';
+    } else if (max_index == 1) {
+      movementInString = 'Walking';
+    } else if (max_index == 2) {
+      movementInString = 'Stationary';
+    } else {
+      movementInString = 'error';
+    }
+
+    if (max_value > 0.0001 && max_value < 0.9999) {
+      movementProbability = max_value;
+    } else {
+      movementProbability = 0.0;
+    }
+
+    myBluetoothReadValueUUID = 'Pro:$movementProbability, Move:$movementInString';
+
+    // 重新初始化 bodyList 以更新 FirstPage
+    bodyList[0] = FirstPage(increaseCount, () => allCount, movementProbability, movementInString);
+  });
+}
+
+
+
+   final List<Widget> bodyList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    bodyList.addAll([
+      FirstPage(increaseCount, () => allCount, movementProbability, movementInString),
+      //SecondPage(increaseCount, () => allCount),
+      SecondPage(changeBluetoothReadValue, () => myBluetoothReadValueUUID ),
+      ThirdPage(increaseCount, () => allCount),
+    ]);
+  }
+
+  void onTap(int index) {
+    setState(() {
+      currentIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 440,
-          height: 956,
-          clipBehavior: Clip.antiAlias,
-          decoration: ShapeDecoration(
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-              side: BorderSide(
-                width: 6,
-                strokeAlign: BorderSide.strokeAlignOutside,
-                color: const Color(0xFF757575) /* Icon-Default-Secondary */,
-              ),
-              borderRadius: BorderRadius.circular(28),
-            ),
-          ),
-          child: Stack(
-            children: [
-              Positioned(//底部栏
-                left: 0,
-                top: 863,
-                child: Container(
-                  width: 440,
-                  height: 93,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFECE6F0) /* Schemes-Surface-Container-High */,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 8,
-                    children: [
-                      Expanded(//home
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            spacing: 4,
-                            children: [
-                              Container(
-                                clipBehavior: Clip.antiAlias,
-                                decoration: ShapeDecoration(
-                                  color: const Color(0xFF65558F) /* Schemes-Primary */,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 64,
-                                      height: 32,
-                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Container(width: 24, height: 24, child: Stack()),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 136,
-                                child: Text(
-                                  'home',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: const Color(0xFF1D1B20) /* Schemes-On-Surface */,
-                                    fontSize: 14,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.43,
-                                    letterSpacing: 0.10,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Expanded(//arduino
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            spacing: 4,
-                            children: [
-                              Container(
-                                width: 64,
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 64,
-                                      height: 32,
-                                      padding: const EdgeInsets.all(20),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        spacing: 10,
-                                        children: [
-                                          Container(width: 24, height: 24, child: Stack()),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 136,
-                                child: Text(
-                                  'arduino',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: const Color(0xFF49454F) /* Schemes-On-Surface-Variant */,
-                                    fontSize: 14,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.43,
-                                    letterSpacing: 0.10,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Expanded(//setting
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            spacing: 4,
-                            children: [
-                              Container(
-                                width: 64,
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 64,
-                                      height: 32,
-                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        spacing: 10,
-                                        children: [
-                                          Container(width: 24, height: 24, child: Stack()),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 136,
-                                child: Text(
-                                  'setting',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: const Color(0xFF49454F) /* Schemes-On-Surface-Variant */,
-                                    fontSize: 14,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.43,
-                                    letterSpacing: 0.10,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(//中间内容
-                left: 0,
-                top: 94,
-                child: Container(
-                  width: 440,
-                  height: 769,
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFEF7FF) /* Schemes-Surface */,
-                  ),
-                  child: BluetoothHomePage(title: 'Flutter BLE Demo'), 
-                ),
-              ),
-              Positioned(//顶部栏
-                left: 0,
-                top: 52,
-                child: Container(
-                  width: 440,
-                  height: 42,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: Container(
-                          width: 440,
-                          height: 42,
-                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFECE6F0) /* Schemes-Surface-Container-High */,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x26000000),
-                                blurRadius: 6,
-                                offset: Offset(0, 2),
-                                spreadRadius: 2,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned( //左 包括home
-                        left: 0,
-                        top: 0,
-                        child: Container(
-                          width: 440,
-                          height: 42,
-                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFECE6F0) /* Schemes-Surface-Container-High */,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x26000000),
-                                blurRadius: 6,
-                                offset: Offset(0, 2),
-                                spreadRadius: 2,
-                              )
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            spacing: 4,
-                            children: [
-                              Container(
-                                width: 48,
-                                height: 30,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  spacing: 10,
-                                  children: [
-                                  
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 328,
-                                child: Text(
-                                  'home',
-                                  style: TextStyle(
-                                    color: const Color(0xFF1D1B20) /* Schemes-On-Surface */,
-                                    fontSize: 22,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.27,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: 48,
-                                height: 48,
-                                child: Stack(
-                                  children: [
-                                    Positioned(
-                                      left: 0,
-                                      top: 0,
-                                      child: Container(
-                                        width: 48,
-                                        height: 48,
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          spacing: 10,
-                                          children: [
-                                            Container(
-                                              clipBehavior: Clip.antiAlias,
-                                              decoration: ShapeDecoration(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(100),
-                                                ),
-                                              ),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                spacing: 10,
-                                                children: [
-                                                  Container(
-                                                    padding: const EdgeInsets.all(8),
-                                                    child: Row(
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      spacing: 10,
-                                                      children: [
-                                                        Container(width: 24, height: 24, child: Stack()),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(//最顶部栏
-                left: 0,
-                top: 0,
-                child: Container(
-                  width: 440,
-                  height: 52,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFECE6F0) /* Schemes-Surface-Container-High */,
-                  ),
-                ),
-              ), 
-            ],
-          ),
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('tmapp'),
         ),
-      ],
+        bottomNavigationBar: BottomNavigationBar(
+            items: items, currentIndex: currentIndex, onTap: onTap),
+        body: Stack(
+          children: [
+            Offstage(
+              offstage: currentIndex != 0,
+              child: bodyList[0],
+            ),
+            Offstage(
+              offstage: currentIndex != 1,
+              child: bodyList[1],
+            ),
+            Offstage(
+              offstage: currentIndex != 2,
+              child: bodyList[2],
+            ),
+          ],
+        ));
+  }
+}
+
+// 统一修改子页面，使其可以增加 allCount 并读取最新的值
+class FirstPage extends StatefulWidget {
+  final VoidCallback increaseCount;
+  final int Function() getAllCount;
+  final double movementProbability;
+  final String movementInString;
+
+  //FirstPage(this.increaseCount, this.getAllCount);
+   FirstPage(this.increaseCount, this.getAllCount, this.movementProbability, this.movementInString);
+
+  @override
+
+  @override
+  _FirstPageState createState() => _FirstPageState();
+}
+
+class _FirstPageState extends State<FirstPage> {
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    String imagePath;
+    switch (widget.movementInString) {
+      case 'Running':
+        imagePath = 'assets/img/running.gif';
+        break;
+      case 'Walking':
+        imagePath = 'assets/img/Walking.gif';
+        break;
+      case 'Stationary':
+        imagePath = 'assets/img/Stationary.gif';
+        break;
+      default:
+        imagePath = 'assets/img/other.gif';
+        break;
+    }
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox(
+                  width: 300,
+                  height: 300,
+                  child: CustomPaint(
+                    painter: ArcPainter(widget.movementProbability * 100, Colors.green, Colors.grey),
+                  ),
+                ),
+                Image.asset(
+                  imagePath, // Dynamically chosen image based on movement state
+                  width: 150, // Adjust width as needed
+                  height: 150, // Adjust height as needed
+                  fit: BoxFit.contain,
+                ),
+              ],
+            ),
+            SizedBox(
+              width: 386,
+              child: Text(
+                '${(widget.movementProbability * 100).toStringAsFixed(1)}%',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: const Color(0xFF4F378A),
+                  fontSize: 96,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w900,
+                  shadows: [
+                    Shadow(
+                      offset: Offset(0, 2),
+                      blurRadius: 3,
+                      color: Color(0xFF000000).withOpacity(0.30),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 386,
+              child: Text(
+                'percent chance you are',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: const Color(0xFF32A455),
+                  fontSize: 30,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w900,
+                  shadows: [
+                    Shadow(
+                      offset: Offset(0, 2),
+                      blurRadius: 3,
+                      color: Color(0xFF000000).withOpacity(0.30),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 386,
+              child: Text(
+                widget.movementInString,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: const Color(0xFF4F378A),
+                  fontSize: 64,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w900,
+                  shadows: [
+                    Shadow(
+                      offset: Offset(0, 2),
+                      blurRadius: 3,
+                      color: Color(0xFF000000).withOpacity(0.30),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
+
+class SecondPage extends StatefulWidget {
+  final Function(List<int>) changeBluetoothReadValue; 
+  final String Function() changeBluetoothReadValueInSecondPage;
+  SecondPage(this.changeBluetoothReadValue, this.changeBluetoothReadValueInSecondPage);
+
+  @override
+  _SecondPageState createState() => _SecondPageState();
+}
+
+class _SecondPageState extends State<SecondPage> {
+  int count = 0;
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: BluetoothHomePage(title: 'Bluetooth Devices'),
+      );
+  }
+}
+
+class ThirdPage extends StatefulWidget {
+  final VoidCallback increaseCount;
+  final int Function() getAllCount;
+
+  ThirdPage(this.increaseCount, this.getAllCount);
+
+  @override
+  _ThirdPageState createState() => _ThirdPageState();
+}
+
+class _ThirdPageState extends State<ThirdPage> {
+  int count = 0;
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Center(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.all(16), // 添加内边距
+              decoration: BoxDecoration(
+                color: Colors.blueAccent.withOpacity(0.1), // 设置背景颜色
+                borderRadius: BorderRadius.circular(12), // 圆角
+              ),
+              child: Text(
+                '🔹 Information: This is our team app',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueAccent,
+                ),
+              ),
+            ),
+            SizedBox(height: 20), // 间距
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                '📡 Please use your Bluetooth to connect to our Arduino device. The name is **"Lee"**.\n\n'
+                '🔔 Push the **"NOTIFY"** button in **f43b1...** to receive real-time data.\n\n'
+                '📊 The **"Home"** page will show the probability of your movement and the type of movement.\n\n'
+                '📝 team mambers "lee" "b" "han" "Tee" "huawei".\n\n'
+                'have fun!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w500,
+                  height: 1.5, // 增加行距
+                ),
+              ),
+            ),
+          ],
+
+        )),
+    );
+  }
+}
+
 
 class BluetoothHomePage extends StatefulWidget {
   BluetoothHomePage({Key? key, required this.title}) : super(key: key);
@@ -891,6 +355,7 @@ class BluetoothHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<BluetoothHomePage> {
+  
   final _writeController = TextEditingController();
   BluetoothDevice? _connectedDevice;
   List<BluetoothService> _services = [];
@@ -901,6 +366,7 @@ class MyHomePageState extends State<BluetoothHomePage> {
       });
     }
   }
+
   _initBluetooth() async { 
     var subscription = FlutterBluePlus.onScanResults.listen(
           (results) {
@@ -1110,7 +576,22 @@ class MyHomePageState extends State<BluetoothHomePage> {
                   ),
                   Row(
                     children: <Widget>[
-                      Expanded(child: Text('Value: ${widget.readValues[characteristic.uuid]}')),
+                      Expanded(
+                        child: Builder(
+                          builder: (context) {
+                            List<int> newValue = widget.readValues[characteristic.uuid] as List<int>? ?? [];
+                            // 调用更新字符串的方法
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (mounted) {
+                                SecondPage? secondPage = context.findAncestorWidgetOfExactType<SecondPage>();
+                                secondPage?.changeBluetoothReadValue(newValue);
+                              }
+                            });
+                            return Text('Value: ${widget.readValues[characteristic.uuid]}');
+                          },
+                        ),
+                      ),
+                      // Expanded(child: Text('Value: ${widget.readValues[characteristic.uuid]}')),
                     ],
                   ),
                   const Divider(),
@@ -1130,12 +611,12 @@ class MyHomePageState extends State<BluetoothHomePage> {
         ],
       );
     }
-    ListView _buildView() {
-      if (_connectedDevice != null) {
-        return _buildConnectDeviceView();
-      }
-      return _buildListViewOfDevices();
+  ListView _buildView() {
+    if (_connectedDevice != null) {
+      return _buildConnectDeviceView();
     }
+    return _buildListViewOfDevices();
+  }
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
@@ -1144,3 +625,100 @@ class MyHomePageState extends State<BluetoothHomePage> {
     body: _buildView(),
   );
 }
+
+class PercentageArc extends StatelessWidget {
+  final double percentage;
+  final double size;
+  final Color color;
+  final Color backgroundColor;
+  final String label;
+
+  const PercentageArc({
+    Key? key,
+    required this.percentage, // From 0 to 100
+    this.size = 200,
+    this.color = Colors.green,
+    this.backgroundColor = Colors.grey,
+    this.label = "",
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          CustomPaint(
+            size: Size(size, size),
+            painter: ArcPainter(percentage, color, backgroundColor),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "${percentage.toInt()}%",
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.deepPurple,
+                ),
+              ),
+              if (label.isNotEmpty)
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ArcPainter extends CustomPainter {
+  final double percentage;
+  final Color color;
+  final Color backgroundColor;
+
+  ArcPainter(this.percentage, this.color, this.backgroundColor);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+
+    Paint backgroundPaint = Paint()
+      ..color = backgroundColor
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 15;
+
+    Paint foregroundPaint = Paint()
+      ..color = color
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 15;
+
+    double startAngle = -pi / 2; // Start from the top
+    double sweepAngle = (percentage / 100) * 2 * pi; // Convert percentage to angle
+
+    Rect rect = Rect.fromCircle(center: size.center(Offset.zero), radius: size.width / 2);
+
+    // Draw background circle
+    canvas.drawArc(rect, 0, 2 * pi, false, backgroundPaint);
+
+    // Draw progress arc
+    canvas.drawArc(rect, startAngle, sweepAngle, false, foregroundPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+
+
+
