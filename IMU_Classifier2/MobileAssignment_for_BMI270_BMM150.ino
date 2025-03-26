@@ -43,7 +43,8 @@ void setup() {
   imuCharacteristic = new BLECharacteristic("368db6e6-9530-4966-9a1d-8bf78cc18651", BLERead | BLENotify, 3);
   // put your setup code here, to run once:
   Serial.begin(9600);
-  while (!Serial);
+  unsigned long serialTimeout = millis();
+  while (!Serial && (millis() - serialTimeout < 3000));  // 最多等待 3 秒
 
   //BLE SETUP-----------------------------------------
   if(!BLE.begin()){
@@ -138,18 +139,21 @@ void loop() {
     }
 
     // 将 maxValue 乘以 1000 并转换为整数
+    // Multiply maxValue by 1000 and convert to an integer
     int16_t maxValueInt = static_cast<int16_t>(maxValue * 1000);
 
-    // 创建一个 3 字节的数据包
+    // 创建一个 3 字节的数据包, 第一个字节存储 maxIndex, 后两个字节存储 maxValueInt
+    // 例如, 如果 maxIndex 是 1, maxValueInt 是 1234, 那么数据包是 {1, 210, 4}
+    // Create a 3-byte data packet, first byte stores maxIndex, next two bytes store maxValueInt
+    // For example, if maxIndex is 1, maxValueInt is 1234, then the data packet is {1, 210, 4}
     byte dataPacket[3];
-    dataPacket[0] = static_cast<byte>(maxIndex); // 第一个字节存储 maxIndex
-    dataPacket[1] = static_cast<byte>(maxValueInt & 0xFF); // 低字节
-    dataPacket[2] = static_cast<byte>((maxValueInt >> 8) & 0xFF); // 高字节
+    dataPacket[0] = static_cast<byte>(maxIndex); // 第一个字节存储 maxIndex ， First byte stores maxIndex
+    dataPacket[1] = static_cast<byte>(maxValueInt & 0xFF); // 低字节， Low byte
+    dataPacket[2] = static_cast<byte>((maxValueInt >> 8) & 0xFF); // 高字节， High byte
 
-    // 发送数据
+    // 发送数据 Send data
     imuCharacteristic->writeValue(dataPacket, sizeof(dataPacket));
 
-    // 输出信息
     Serial.print("Sent Data - Index: ");
     Serial.print(maxIndex);
     Serial.print(", Value: ");
@@ -158,9 +162,6 @@ void loop() {
     // Serial.println();
     samplesRead = 0;
   }
-
-
-
 }
    // // Loop through the output tensor values from the model
     // for (int i = 0; i < NUM_GESTURES; i++) {
