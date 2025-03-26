@@ -8,6 +8,8 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
+
 
 
 void main() {
@@ -31,10 +33,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  
   final items = [
     BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'),
     BottomNavigationBarItem(icon: Icon(Icons.bluetooth), label: 'bluetooth'),
     BottomNavigationBarItem(icon: Icon(Icons.message), label: 'information'),
+    BottomNavigationBarItem(icon: Icon(Icons.map), label: 'map'),
   ];
   
   //final bodyList = [FirstPage(), SecondPage(), ThirdPage()];
@@ -79,6 +83,7 @@ void changeBluetoothReadValue(List<int> values) {
 
     // 重新初始化 bodyList 以更新 FirstPage
     bodyList[0] = FirstPage(increaseCount, () => allCount, movementProbability, movementInString);
+    bodyList[3] = FourthPage(movementInString);
   });
 }
 
@@ -94,6 +99,7 @@ void changeBluetoothReadValue(List<int> values) {
       //SecondPage(increaseCount, () => allCount),
       SecondPage(changeBluetoothReadValue, () => myBluetoothReadValueUUID ),
       ThirdPage(increaseCount, () => allCount),
+      FourthPage(movementInString),
     ]);
   }
 
@@ -107,23 +113,27 @@ void changeBluetoothReadValue(List<int> values) {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('tmapp'),
+          title: Text('team'),
         ),
         bottomNavigationBar: BottomNavigationBar(
-            items: items, currentIndex: currentIndex, onTap: onTap),
+            items: items, currentIndex: currentIndex, onTap: onTap, type: BottomNavigationBarType.fixed),
         body: Stack(
           children: [
             Offstage(
               offstage: currentIndex != 0,
-              child: bodyList[0],
+              child: bodyList[0],//home
             ),
             Offstage(
               offstage: currentIndex != 1,
-              child: bodyList[1],
+              child: bodyList[1],//bluetooth
             ),
             Offstage(
               offstage: currentIndex != 2,
-              child: bodyList[2],
+              child: bodyList[2],//info
+            ),
+            Offstage(
+              offstage: currentIndex != 3,
+              child: bodyList[3],//map
             ),
           ],
         ));
@@ -139,8 +149,6 @@ class FirstPage extends StatefulWidget {
 
   //FirstPage(this.increaseCount, this.getAllCount);
    FirstPage(this.increaseCount, this.getAllCount, this.movementProbability, this.movementInString);
-
-  @override
 
   @override
   _FirstPageState createState() => _FirstPageState();
@@ -341,6 +349,28 @@ class _ThirdPageState extends State<ThirdPage> {
     );
   }
 }
+
+class FourthPage extends StatefulWidget {
+  final String movementInString;
+  FourthPage(this.movementInString);
+
+  @override
+  _FourthPageState createState() => _FourthPageState();
+}
+
+class _FourthPageState extends State<FourthPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Center(
+          child:
+            Text(widget.movementInString, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        ),
+    );
+  }
+}
+
+
 
 
 class BluetoothHomePage extends StatefulWidget {
