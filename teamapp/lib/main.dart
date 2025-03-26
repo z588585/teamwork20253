@@ -144,14 +144,6 @@ void changeBluetoothReadValue(List<int> values) {
 
 
 
-// class FourthPage extends StatefulWidget {
-//   final String movementInString;
-//   FourthPage(this.movementInString);
-
-//   @override
-//   _FourthPageState createState() => _FourthPageState();
-// }
-
 
 class FourthPage extends StatefulWidget {
   final String movementInString;
@@ -162,8 +154,16 @@ class FourthPage extends StatefulWidget {
   _FourthPageState createState() => _FourthPageState();
 }
 
+
+class ColoredTrackPoint {
+  final LatLng point;
+  final Color color;
+
+  ColoredTrackPoint(this.point, this.color);
+}
+
 class _FourthPageState extends State<FourthPage> {
-  List<LatLng> _track = [];
+  List<ColoredTrackPoint> _track = [];
   double _totalDistance = 0.0;
   GoogleMapController? _mapController;
 
@@ -171,12 +171,13 @@ class _FourthPageState extends State<FourthPage> {
   void initState() {
     super.initState();
 
-    // 注册位置监听
+    // this is the event that is fired when a location is recorded
     bg.BackgroundGeolocation.onLocation((bg.Location location) {
       LatLng newPoint = LatLng(location.coords.latitude, location.coords.longitude);
+      Color currentColor = _getColorForMovement(widget.movementInString);
 
       if (_track.isNotEmpty) {
-        final prev = _track.last;
+        final prev = _track.last.point;
         final segment = Geolocator.distanceBetween(
           prev.latitude, prev.longitude,
           newPoint.latitude, newPoint.longitude,
@@ -185,14 +186,14 @@ class _FourthPageState extends State<FourthPage> {
       }
 
       setState(() {
-        _track.add(newPoint);
+        _track.add(ColoredTrackPoint(newPoint, currentColor));
       });
 
-      // 移动摄像头
+      // move the camera to the new point
       _mapController?.animateCamera(CameraUpdate.newLatLng(newPoint));
     });
 
-    // 配置插件
+    // configure the plugin
     bg.BackgroundGeolocation.ready(bg.Config(
       desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
       distanceFilter: 0,
@@ -207,9 +208,22 @@ class _FourthPageState extends State<FourthPage> {
     });
   }
 
+  Color _getColorForMovement(String movement) { // based on the movement type, return a color
+    switch (movement) {
+      case 'Running':
+        return Colors.red;
+      case 'Walking':
+        return Colors.green;
+      case 'Stationary':
+        return Colors.blue;
+      default:
+        return Colors.grey;
+    }
+  }
+
   @override
   void dispose() {
-    bg.BackgroundGeolocation.stop(); // 可选
+    bg.BackgroundGeolocation.stop();
     super.dispose();
   }
 
@@ -220,41 +234,28 @@ class _FourthPageState extends State<FourthPage> {
     });
   }
 
+
+ // the build method for colorful tracking
   @override
-Widget build(BuildContext context) {
-  // 根据当前的运动状态设置不同的颜色
-  Color trackColor;
-  switch (widget.movementInString) {
-    case 'Running':
-      trackColor = Colors.red;
-      break;
-    case 'Walking':
-      trackColor = Colors.green;
-      break;
-    case 'Stationary':
-      trackColor = Colors.blue;
-      break;
-    default:
-      trackColor = Colors.grey;
-      break;
-  }
+  Widget build(BuildContext context) {
+    Set<Polyline> polylines = {};
 
-  Set<Polyline> polylines = {
-    Polyline(
-      polylineId: PolylineId('movement'),
-      points: _track,
-      color: trackColor,
-      width: 5,
-    ),
-  };
+    for (int i = 1; i < _track.length; i++) {
+      polylines.add(Polyline(
+        polylineId: PolylineId('movement_$i'),
+        points: [_track[i - 1].point, _track[i].point],
+        color: _track[i].color,
+        width: 5,
+      ));
+    }
 
-    return Scaffold(
+    return Scaffold( // the scaffold for colorful tracking
       appBar: AppBar(title: Text('Movement Tracking')),
       body: Stack(
         children: [
           GoogleMap(
             initialCameraPosition: CameraPosition(
-              target: _track.isNotEmpty ? _track.first : LatLng(0, 0),
+              target: _track.isNotEmpty ? _track.first.point : LatLng(0, 0),
               zoom: 16,
             ),
             polylines: polylines,
@@ -271,7 +272,8 @@ Widget build(BuildContext context) {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Movement: ${widget.movementInString}', style: TextStyle(fontSize: 16)),
-                  Text('Total Distance: ${_totalDistance.toStringAsFixed(2)} m', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text('Total Distance: ${_totalDistance.toStringAsFixed(2)} m',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ],
               ),
             ),

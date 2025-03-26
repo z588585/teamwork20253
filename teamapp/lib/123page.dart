@@ -10,7 +10,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 
-// 统一修改子页面，使其可以增加 allCount 并读取最新的值
+
 class FirstPage extends StatefulWidget {
   final VoidCallback increaseCount;
   final int Function() getAllCount;
@@ -214,10 +214,10 @@ class _ThirdPageState extends State<ThirdPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              padding: EdgeInsets.all(16), // 添加内边距
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.blueAccent.withOpacity(0.1), // 设置背景颜色
-                borderRadius: BorderRadius.circular(12), // 圆角
+                color: Colors.blueAccent.withOpacity(0.1), 
+                borderRadius: BorderRadius.circular(12), 
               ),
               child: Text(
                 '🔹 Information: This is our team app',
@@ -229,7 +229,7 @@ class _ThirdPageState extends State<ThirdPage> {
                 ),
               ),
             ),
-            SizedBox(height: 20), // 间距
+            SizedBox(height: 20), 
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
@@ -240,10 +240,10 @@ class _ThirdPageState extends State<ThirdPage> {
                 'have fun!',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 9,
                   color: Colors.black87,
                   fontWeight: FontWeight.w500,
-                  height: 1.5, // 增加行距
+                  height: 1.5, 
                 ),
               ),
             ),
