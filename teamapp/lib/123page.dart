@@ -203,57 +203,59 @@ class ThirdPage extends StatefulWidget {
 class _ThirdPageState extends State<ThirdPage> {
   int count = 0;
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.blueAccent.withOpacity(0.1), 
-                borderRadius: BorderRadius.circular(12), 
-              ),
-              child: Text(
-                '🔹 Information: This is our team app',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent,
+      body: Center(
+        child: SingleChildScrollView( // to make the text not overflow
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.blueAccent.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  'Information: team app',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 20), 
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Text(
-                '📡 Please use your Bluetooth to connect to our Arduino device. The name is **"Lee"**.\n\n'
-                '🔔 Push the **"NOTIFY"** button in **f43b1...** to receive real-time data.\n\n'
-                '📊 The **"Home"** page will show the probability of your movement and the type of movement.\n\n'
-                '📝 team mambers "lee" "b" "han" "Tee" "huawei".\n\n'
-                'have fun!',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 9,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w500,
-                  height: 1.5, 
+              SizedBox(height: 20),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  '📡 Please use your Bluetooth to connect to our Arduino device. The name is **"Lee"**.\n\n'
+                  '🔔 Push the **"NOTIFY"** button in **f43b1...** to receive real-time data.\n\n'
+                  '📊 The **Home Page** will show the probability of your movement and the type of movement.\n\n'
+                  '🗺️ The **Map Page** displays a map with the route you’ve walked or run through, and the total distance.\n'
+                  '🔴 Red lines represent **running**, 🔵 blue lines represent **walking**.\n'
+                  '🧹 A **clear button** is located at the bottom-left to reset the tracking data.\n\n'
+                  '👥 Team Members: "Lee", "B", "Han", "Tee", "Huawei".\n\n'
+                  '🎉 Have fun!',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                    height: 1.6,
+                  ),
                 ),
               ),
-            ),
-          ],
-
-        )),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
-
 
 
 

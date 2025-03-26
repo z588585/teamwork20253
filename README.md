@@ -1,3 +1,4 @@
+Sure! Here's the full English translation of your documentation:
 
 ---
 
@@ -21,6 +22,9 @@ teamwork20253-main\
 │   ├── build/                                   # Compiled build output
 │   ├── test/                                    # Testing files
 │
+├── app.apk                                      # app install apk
+├── flutter-apk.zip                              # all apk
+│
 └── README.md                                    # This file
 ```
 
@@ -28,37 +32,36 @@ teamwork20253-main\
 
 ### 1. Running the Arduino Code
 
-1. Open `IMU_Classifier2/MobileAssignment_for_BMI270_BMM150.ino` in **Arduino IDE**（if you use LSM9DS1，please use other one）
+1. Open `IMU_Classifier2/MobileAssignment_for_BMI270_BMM150.ino` in **Arduino IDE** (if you're using LSM9DS1, please use the other version).
 2. Connect your **Arduino Board** via USB.
-3. Ensure that the required **BMI270 and BMM150** sensor libraries are installed.
-4. Select the appropriate **board** and **port** from Arduino IDE.
-5. Click **Upload** to flash the firmware to your Arduino.
+3. Make sure the required **BMI270 and BMM150** sensor libraries are installed.
+4. Select the appropriate **board** and **port** in the Arduino IDE.
+5. Click **Upload** to flash the firmware to your Arduino device.
 
+---
 
+### 2. Running the Application
 
-### 2 Running the Application
+#### 2.1 Using the Release APK
 
-#### 2.1 Use release apk
+- Please locate the installer file in the release section and install it on your phone.
 
-#### **use apk**
+#### 2.2 Building from Source
 
-- Please find the installer file in release and install it on your phone.
+##### **Prerequisites**
 
-
-#### 2.1 Build from source code
-
-#### **Prerequisites**
-- windos10/11
-- Install **Flutter** and **Dart**: Follow the [Flutter installation guide](https://flutter.dev/docs/get-started/install).
+- Windows 10/11
+- Install **Flutter** and **Dart**: Follow the official [Flutter installation guide](https://flutter.dev/docs/get-started/install).
 - Ensure **Android Studio** or **Visual Studio Code** is installed for development.
-- Install the necessary dependencies by running:
+- Install necessary dependencies by running:
 
   ```sh
   cd teamwork20253-main\teamapp
   flutter pub get
   ```
 
-#### **Starting the App**
+##### **Starting the App**
+
 1. Navigate to the Flutter project directory:
 
    ```sh
@@ -72,27 +75,40 @@ teamwork20253-main\
    flutter run
    ```
 
-### 3. Connecting to Bluetooth Device
+---
+
+### 3. Connecting to the Bluetooth Device
 
 - The app uses **Flutter Blue Plus** to connect to an external Bluetooth device.
-- On the **Bluetooth Page**, search for available devices and connect to the correct Arduino device.
-- Ensure the device is named **"Lee"**.
-- After connecting, press the **"NOTIFY"** button on **f43b1...** to start receiving real-time movement classification data.
+- On the **Bluetooth Page**, search for available devices and connect to the correct Arduino board.
+- Make sure the device name is **"Lee"**.
+- After connecting, press the **"NOTIFY"** button under the **f43b1...** characteristic to start receiving real-time movement classification data.
+
+---
 
 ### 4. Understanding the UI
 
-- **Home Page:** Displays movement classification results.
-- **Bluetooth Page:** Allows connecting to the Arduino device.
-- **Information Page:** Shows details about the team and project usage.
+- **Home Page:** Displays movement classification results and current calorie consumption.
+- **Bluetooth Page:** Allows connection to the Arduino device.
+- **Information Page:** Provides details about the team and usage instructions.
+- **Map Page:** Displays a map with the user’s traveled route and total distance.  
+  Different colors represent movement states:  
+  - **Red** for running  
+  - **Blue** for walking  
+  A **clear button** is located at the bottom-left corner to reset the tracking data.
 
 ---
 
 ## Authors
+
 - **Lee**
 - **B**
 - **Han**
 - **Tee**
 - **Huawei**
 
----
+--- 
+
+Let me know if you'd like a stylized markdown version or a downloadable file too!
+
 
