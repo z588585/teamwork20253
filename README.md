@@ -1,4 +1,3 @@
-Sure! Here's the full English translation of your documentation:
 
 ---
 
