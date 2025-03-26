@@ -10,7 +10,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
-
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 
 
 void main() {
@@ -143,44 +144,58 @@ void changeBluetoothReadValue(List<int> values) {
 
 
 
+// class FourthPage extends StatefulWidget {
+//   final String movementInString;
+//   FourthPage(this.movementInString);
+
+//   @override
+//   _FourthPageState createState() => _FourthPageState();
+// }
+
+
 class FourthPage extends StatefulWidget {
   final String movementInString;
+
   FourthPage(this.movementInString);
 
   @override
   _FourthPageState createState() => _FourthPageState();
 }
 
-
-
-
 class _FourthPageState extends State<FourthPage> {
-  List<bg.Location> _locations = [];
+  List<LatLng> _track = [];
   double _totalDistance = 0.0;
+  GoogleMapController? _mapController;
 
   @override
   void initState() {
     super.initState();
 
-    // 监听位置信息
+    // 注册位置监听
     bg.BackgroundGeolocation.onLocation((bg.Location location) {
+      LatLng newPoint = LatLng(location.coords.latitude, location.coords.longitude);
+
+      if (_track.isNotEmpty) {
+        final prev = _track.last;
+        final segment = Geolocator.distanceBetween(
+          prev.latitude, prev.longitude,
+          newPoint.latitude, newPoint.longitude,
+        );
+        _totalDistance += segment;
+      }
+
       setState(() {
-        if (_locations.isNotEmpty) {
-          _totalDistance += _calculateDistance(
-            _locations.last.coords.latitude,
-            _locations.last.coords.longitude,
-            location.coords.latitude,
-            location.coords.longitude,
-          );
-        }
-        _locations.add(location);
+        _track.add(newPoint);
       });
+
+      // 移动摄像头
+      _mapController?.animateCamera(CameraUpdate.newLatLng(newPoint));
     });
 
-    // 插件初始化
+    // 配置插件
     bg.BackgroundGeolocation.ready(bg.Config(
       desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
-      distanceFilter: 0,//10
+      distanceFilter: 0,
       stopOnTerminate: false,
       startOnBoot: true,
       debug: true,
@@ -192,41 +207,81 @@ class _FourthPageState extends State<FourthPage> {
     });
   }
 
-  /// Haversine公式计算两点之间距离（米）
-  double _calculateDistance(lat1, lon1, lat2, lon2) {
-    const earthRadius = 6371000; // 米
-    final dLat = _deg2rad(lat2 - lat1);
-    final dLon = _deg2rad(lon2 - lon1);
-    final a = sin(dLat / 2) * sin(dLat / 2) +
-        cos(_deg2rad(lat1)) * cos(_deg2rad(lat2)) *
-            sin(dLon / 2) * sin(dLon / 2);
-    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
-    return earthRadius * c;
+  @override
+  void dispose() {
+    bg.BackgroundGeolocation.stop(); // 可选
+    super.dispose();
   }
 
-  double _deg2rad(deg) => deg * (pi / 180);
+  void _clearTrack() {
+    setState(() {
+      _track.clear();
+      _totalDistance = 0.0;
+    });
+  }
 
   @override
-  Widget build(BuildContext context) {
+Widget build(BuildContext context) {
+  // 根据当前的运动状态设置不同的颜色
+  Color trackColor;
+  switch (widget.movementInString) {
+    case 'Running':
+      trackColor = Colors.red;
+      break;
+    case 'Walking':
+      trackColor = Colors.green;
+      break;
+    case 'Stationary':
+      trackColor = Colors.blue;
+      break;
+    default:
+      trackColor = Colors.grey;
+      break;
+  }
+
+  Set<Polyline> polylines = {
+    Polyline(
+      polylineId: PolylineId('movement'),
+      points: _track,
+      color: trackColor,
+      width: 5,
+    ),
+  };
+
     return Scaffold(
-      appBar: AppBar(title: Text('Trajectory')),
-      body: Column(
+      appBar: AppBar(title: Text('Movement Tracking')),
+      body: Stack(
         children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: _locations.length,
-              itemBuilder: (_, i) => ListTile(
-                title: Text(
-                    'Lat: ${_locations[i].coords.latitude}, Lng: ${_locations[i].coords.longitude}'),
+          GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target: _track.isNotEmpty ? _track.first : LatLng(0, 0),
+              zoom: 16,
+            ),
+            polylines: polylines,
+            onMapCreated: (controller) => _mapController = controller,
+            myLocationEnabled: true,
+          ),
+          Positioned(
+            bottom: 20,
+            left: 20,
+            child: Container(
+              padding: EdgeInsets.all(12),
+              color: Colors.white70,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Movement: ${widget.movementInString}', style: TextStyle(fontSize: 16)),
+                  Text('Total Distance: ${_totalDistance.toStringAsFixed(2)} m', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                ],
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text('Total Distance: ${_totalDistance.toStringAsFixed(2)} meters',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          )
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _clearTrack,
+        tooltip: 'Clear',
+        child: Icon(Icons.clear),
       ),
     );
   }

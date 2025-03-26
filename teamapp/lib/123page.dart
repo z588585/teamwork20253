@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
-import 'dart:async';
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -8,7 +8,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
+
 
 // 统一修改子页面，使其可以增加 allCount 并读取最新的值
 class FirstPage extends StatefulWidget {
@@ -25,8 +25,21 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
+  double calories = 0.0;
 
+  @override
+  void didUpdateWidget(covariant FirstPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
 
+    if (widget.movementInString != oldWidget.movementInString ||
+        widget.movementProbability != oldWidget.movementProbability) {
+      if (widget.movementInString == 'Walking') {
+        calories += 0.1;
+      } else if (widget.movementInString == 'Running') {
+        calories += 0.2;
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +58,7 @@ class _FirstPageState extends State<FirstPage> {
         imagePath = 'assets/img/other.gif';
         break;
     }
+
     return Scaffold(
       body: Center(
         child: Column(
@@ -57,13 +71,14 @@ class _FirstPageState extends State<FirstPage> {
                   width: 300,
                   height: 300,
                   child: CustomPaint(
-                    painter: ArcPainter(widget.movementProbability * 100, Colors.green, Colors.grey),
+                    painter: ArcPainter(
+                        widget.movementProbability * 100, Colors.green, Colors.grey),
                   ),
                 ),
                 Image.asset(
-                  imagePath, // Dynamically chosen image based on movement state
-                  width: 150, // Adjust width as needed
-                  height: 150, // Adjust height as needed
+                  imagePath,
+                  width: 150,
+                  height: 150,
                   fit: BoxFit.contain,
                 ),
               ],
@@ -75,7 +90,7 @@ class _FirstPageState extends State<FirstPage> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: const Color(0xFF4F378A),
-                  fontSize: 96,
+                  fontSize: 80,
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w900,
                   shadows: [
@@ -91,7 +106,7 @@ class _FirstPageState extends State<FirstPage> {
             SizedBox(
               width: 386,
               child: Text(
-                'percent chance you are',
+                'percent chance you',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: const Color(0xFF32A455),
@@ -128,12 +143,33 @@ class _FirstPageState extends State<FirstPage> {
                 ),
               ),
             ),
+            SizedBox(height: 20),
+            Text(
+              'Calories Burned: ${calories.toStringAsFixed(1)} kcal',
+              style: TextStyle(
+                fontSize: 24,
+                color: const Color(0xFF32A455),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  calories = 0.0;
+                });
+              },
+              child: Text('Reset Calories'),
+            ),
           ],
         ),
       ),
     );
   }
 }
+
+
+
 
 class SecondPage extends StatefulWidget {
   final Function(List<int>) changeBluetoothReadValue; 
