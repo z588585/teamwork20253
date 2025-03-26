@@ -1,3 +1,7 @@
+val backgroundGeolocation = project(":flutter_background_geolocation")
+apply { from("${backgroundGeolocation.projectDir}/background_geolocation.gradle") }
+
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -37,6 +41,7 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
+            isShrinkResources = false   // <-- REQUIRED !!!
         }
     }
 }
